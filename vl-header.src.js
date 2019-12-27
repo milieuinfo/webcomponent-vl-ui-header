@@ -4,7 +4,7 @@ import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@go
 /**
  * VlHeader
  * @class
- * @classdesc 
+ * @classdesc De Vlaanderen header.
  * 
  * @extends VlElement
  * 
