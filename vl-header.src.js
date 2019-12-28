@@ -8,6 +8,8 @@ import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@go
  * 
  * @extends VlElement
  * 
+ * @property {string} data-vl-identifier - De header identifier die gebruikt wordt om bij AIV de header op te halen.
+ * 
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-header/releases/latest|Release notes}
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-header/issues|Issues}
  * @see {@link https://webcomponenten.omgeving.vlaanderen.be/demo/vl-header.html|Demo}
@@ -32,11 +34,7 @@ export class VlHeader extends VlElement(HTMLElement) {
     }
 
     get _widgetUUID() {
-        return {
-            'localhost:8080': '59188ff6-662b-45b9-b23a-964ad48c2bfb',
-            'localhost:8081': '59188ff6-662b-45b9-b23a-964ad48c2bfb',
-            'localhost:9000': '59188ff6-662b-45b9-b23a-964ad48c2bfb'
-        }[window.location.host];
+        return this.dataset.vlIdentifier;
     }
 
     getHeaderTemplate() {
