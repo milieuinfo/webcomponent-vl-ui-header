@@ -39,6 +39,15 @@
           assert(console.log.calledWith(message));
         });
       });
+
+      test('toont een console foutmelding wanneer het ophalen van de Webuniversum embed code niet lukt', () => {
+        fetchMock.mock('https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget/59188ff6-662b-45b9-b23a-964ad48c2bfb/embed', 404);
+        const header = fixture('vl-header-fixture');
+        sandbox.spy(console, 'error');
+        return fetchMock.flush().then(() => {
+          assert(console.error.called);
+        });
+      });
     });
   </script>
 </body>

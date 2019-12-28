@@ -48,7 +48,11 @@ export class VlHeader extends VlElement(HTMLElement) {
     __addHeaderElement() {
         fetch(this._widgetURL)
             .then((response) => {
-                return response.text();
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
+                }
             }).then((code) => this.__executeCode(code)).catch(error => console.error(error));
     }
 
