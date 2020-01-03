@@ -5,7 +5,10 @@
   "scripts": {
     "prepare": "npm update --dev vl-ui-util && npm run prepare:util",
     "prepare:util": "npm explore vl-ui-util -- npm run util",
-    "test": "wct -l chrome,firefox --npm",
+    "test": "npm explore vl-ui-util -- npm run test",
+    "test:unit": "npm explore vl-ui-util -- npm run test:unit",
+    "test:e2e": "npm explore vl-ui-util -- npm run test:e2e",
+    "test:grid": "npm explore vl-ui-util -- npm run test:grid",
     "release": "np",
     "release:prepare": "npm run release:prepare:build && npm run release:prepare:imports && npm run release:prepare:css && npm run release:prepare:commit",
     "release:prepare:build": "uglifyjs --compress --mangle --output vl-header.js -- *.src.js",
@@ -13,7 +16,7 @@
     "release:prepare:css": "replace '\\.\\./style.css' '/node_modules/vl-ui-header/style.css' vl-header.js",
     "release:prepare:commit": "git add -f vl-header.js && git commit --amend --no-edit && git pull",
     "release:testless": "np --yolo",
-    "demo": "http-server -p 9000"
+    "demo": "npm explore vl-ui-util -- npm run demo"
   },
   "repository": {
     "type": "git",
@@ -33,15 +36,10 @@
   },
   "devDependencies": {
     "@govflanders/vl-ui-util": "^3.9.1",
-    "http-server": "0.11.1",
     "np": "3.0.4",
     "uglify-js-es6": "2.8.9",
-    "vl-ui-util": "^3.0.10",
-    "wct-browser-legacy": "1.0.2",
-    "web-component-tester": "6.9.2",
-    "replace": "^1.1.1",
-    "fetch-mock": "^8.1.0",
-    "sinon": "7.5.0"
+    "vl-ui-util": "^3.1.0",
+    "replace": "^1.1.1"
   },
   "publishConfig": {
     "registry": "http://artifactory-pr-build.lb.cumuli.be:8081/artifactory/api/npm/acd-npm/"
