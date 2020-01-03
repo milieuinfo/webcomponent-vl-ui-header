@@ -1,6 +1,6 @@
 {
   "name": "vl-ui-header",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "De Vlaanderen header.",
   "scripts": {
     "prepare": "npm update --dev vl-ui-util && npm run prepare:util",
