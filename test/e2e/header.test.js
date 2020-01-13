@@ -9,4 +9,8 @@ describe('vl-header', async () => {
         return vlHeaderPage.load();
     });
 
+    it('als gebruiker zie ik de globale header van Vlaanderen', async () => {
+        const header = await vlHeaderPage.getHeader();
+        await assert.eventually.isTrue(header.isDisplayed());
+    });
 });
