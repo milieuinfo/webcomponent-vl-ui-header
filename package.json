@@ -1,6 +1,9 @@
 {
   "name": "vl-ui-header",
   "version": "1.0.0",
+  "description": "De Vlaanderen header.",
+  "author": "DIDM",
+  "license": "MIT",
   "main": "./src/index.js",
   "exports": {
     "require": "./index.js",
@@ -8,7 +11,17 @@
     "node": "./index.js",
     "default": "./index.js"
   },
-  "description": "De Vlaanderen header.",
+  "homepage": "https://github.com/milieuinfo/webcomponent-vl-ui-header#readme",
+  "bugs": {
+    "url": "https://github.com/milieuinfo/webcomponent-vl-ui-header/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/milieuinfo/webcomponent-vl-ui-header.git"
+  },
+  "publishConfig": {
+    "registry": "http://artifactory-pr-build.lb.cumuli.be:8081/artifactory/api/npm/acd-npm/"
+  },
   "scripts": {
     "prepare": "npm update --dev vl-ui-util && npm run prepare:util",
     "prepare:util": "npm explore vl-ui-util -- npm run util",
@@ -45,16 +58,6 @@
     "release:testless": "np --yolo",
     "demo": "http-server"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/milieuinfo/webcomponent-vl-ui-header.git"
-  },
-  "author": "DIDM",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/milieuinfo/webcomponent-vl-ui-header/issues"
-  },
-  "homepage": "https://github.com/milieuinfo/webcomponent-vl-ui-header#readme",
   "dependencies": {
     "vl-ui-core": "^4.0.0"
   },
@@ -64,8 +67,5 @@
   "devDependencies": {
     "@govflanders/vl-ui-util": "^3.9.1",
     "vl-ui-util": "^4.0.1"
-  },
-  "publishConfig": {
-    "registry": "http://artifactory-pr-build.lb.cumuli.be:8081/artifactory/api/npm/acd-npm/"
   }
 }
