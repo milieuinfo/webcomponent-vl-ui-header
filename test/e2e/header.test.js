@@ -13,4 +13,8 @@ describe('vl-header', async () => {
         const header = await vlHeaderPage.getHeader();
         await assert.eventually.isTrue(header.isDisplayed());
     });
+
+    after(async () => {
+        return driver.quit();
+    });
 });
