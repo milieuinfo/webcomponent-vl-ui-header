@@ -1,5 +1,5 @@
 import { VlElement, define } from 'vl-ui-core';
-import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1vl-ui-widget-polyfill/dist/index.js';
+import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js';
 
 /**
  * VlHeader
