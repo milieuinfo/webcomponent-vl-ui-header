@@ -1,3 +1,3 @@
 module.exports = { 
-    VlHeader: require('../vl-header.src.js').VlHeader
-}
+    VlHeader: require('../dist/vl-header.src.js').VlHeader
+};
