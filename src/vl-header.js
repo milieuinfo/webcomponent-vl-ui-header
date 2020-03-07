@@ -1,5 +1,10 @@
-import { VlElement, define } from '/node_modules/vl-ui-core/dist/vl-core.js';
-import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js';
+import { VlElement, define, awaitScript } from '/node_modules/vl-ui-core/dist/vl-core.js';
+
+awaitScript('vl-header', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
+    define('vl-header', VlHeader);
+}).catch(() => {
+    define('vl-header', VlHeader);
+});
 
 /**
  * VlHeader
@@ -61,5 +66,3 @@ export class VlHeader extends VlElement(HTMLElement) {
         eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlHeader.id + '").innerHTML = $1;'));
     }
 }
-
-define('vl-header', VlHeader);
