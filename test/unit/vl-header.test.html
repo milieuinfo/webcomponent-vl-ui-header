@@ -23,12 +23,17 @@
       const should = chai.should();
       const sandbox = sinon.createSandbox();
 
+      setup((done) => {
+        customElements.whenDefined('vl-header').then(() => done());
+      });
+
       teardown(() => {
         sandbox.restore();
         fetchMock.restore();
       });
 
       test('haalt de Webuniversum embed code op, voorziet een placholder en voert de code uit', () => {
+        debugger;
         const message = 'code werd uitgevoerd!';
         fetchMock.mock('https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget/59188ff6-662b-45b9-b23a-964ad48c2bfb/embed', 'console.log("' + message + '")');
         const header = fixture('vl-header-fixture');
