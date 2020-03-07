@@ -8,8 +8,22 @@ describe('vl-header', async () => {
         return vlHeaderPage.load();
     });
 
+    const isDuringWorkingDays = () => {
+        const today = new Date();
+        const day = today.getDay();
+        return day < 6;
+    }
+
+    const isDuringWorkingHours = () => {
+        const today = new Date();
+        const hours = today.getHours();
+        return hours >= 8 && hours <= 18;
+    }
+
     it('als gebruiker zie ik de globale header van Vlaanderen', async () => {
-        const header = await vlHeaderPage.getHeader();
-        await assert.eventually.isTrue(header.isDisplayed());
+        if (isDuringWorkingDays() && isDuringWorkingHours()) { // DEV servers of AIV uptime check
+            const header = await vlHeaderPage.getHeader();
+            await assert.eventually.isTrue(header.isDisplayed());
+        }
     });
 });
