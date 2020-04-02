@@ -43,7 +43,7 @@
       test('haalt de Webuniversum embed code op, voorziet een placholder en voert de code uit', () => {
         const message = 'code werd uitgevoerd!';
         fetchMock.mock(url, 'console.log("' + message + '")');
-        const header = fixture('vl-header-fixture');
+        fixture('vl-header-fixture');
         sandbox.spy(console, 'log');
         should.not.exist(document.body.querySelector('#' + VlHeader.id));
         return fetchMock.flush(true).then(() => {
@@ -54,7 +54,7 @@
 
       test('toont een console foutmelding wanneer het ophalen van de Webuniversum embed code niet lukt', () => {
         fetchMock.mock(url, 404);
-        const header = fixture('vl-header-fixture');
+        fixture('vl-header-fixture');
         sandbox.spy(console, 'error');
         return fetchMock.flush().then(() => {
           assert(console.error.called);
