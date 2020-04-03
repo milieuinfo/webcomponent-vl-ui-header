@@ -14,6 +14,7 @@ awaitScript('vl-header', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  * @extends VlElement
  * 
  * @property {string} data-vl-identifier - De header identifier die gebruikt wordt om bij AIV de header op te halen.
+ * @property {string} data-vl-development - Attribuut geeft aan dat de AIV ontwikkel servers gebruikt moeten worden.
  * 
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-header/releases/latest|Release notes}
  * @see {@link https://www.github.com/milieuinfo/webcomponent-vl-ui-header/issues|Issues}
@@ -35,11 +36,16 @@ export class VlHeader extends VlElement(HTMLElement) {
     }
 
     get _widgetURL() {
-        return 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget/' + this._widgetUUID + '/embed';
+        const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
+        return `${prefix}/${this._widgetUUID}/embed`;
     }
 
     get _widgetUUID() {
         return this.dataset.vlIdentifier;
+    }
+
+    get _isDevelopment() {
+        return this.hasAttribute('data-vl-development');
     }
 
     getHeaderTemplate() {
