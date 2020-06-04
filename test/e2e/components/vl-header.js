@@ -9,6 +9,10 @@ class VlHeader extends VlElement {
       return super(driver, identifier);
     })();
   }
+
+  async remove() {
+    return this.driver.executeScript('return arguments[0].remove()', this);
+  }
 }
 
 module.exports = VlHeader;
