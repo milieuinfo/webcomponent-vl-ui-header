@@ -4,7 +4,7 @@ const VlHeaderPage = require('./pages/vl-header.page');
 describe('vl-header', async () => {
   const vlHeaderPage = new VlHeaderPage(driver);
 
-  before(() => {
+  beforeEach(() => {
     return vlHeaderPage.load();
   });
 
@@ -24,6 +24,21 @@ describe('vl-header', async () => {
     if (isDuringWorkingDays() && isDuringWorkingHours()) { // DEV servers of AIV uptime check
       const header = await vlHeaderPage.getHeader();
       await assert.eventually.isTrue(header.isDisplayed());
+    }
+  });
+
+  it('als gebruiker zie ik de globale header van Vlaanderen tot dat deze verwijderd wordt', async () => {
+    if (isDuringWorkingDays() && isDuringWorkingHours()) { // DEV servers of AIV uptime check
+      const header = await vlHeaderPage.getHeader();
+      await assert.eventually.isTrue(header.isDisplayed());
+      await header.remove();
+      let error = false;
+      try {
+        await assert.eventually.isFalse(header.isDisplayed());
+      } catch (e) {
+        error = true;
+      }
+      assert.isTrue(error);
     }
   });
 });
