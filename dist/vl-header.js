@@ -1,10 +1,5 @@
-import {vlElement, define, awaitScript} from '/node_modules/vl-ui-core/dist/vl-core.js';
-
-awaitScript('vl-header', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
-  define('vl-header', VlHeader);
-}).catch(() => {
-  define('vl-header', VlHeader);
-});
+import {vlElement, define} from '/node_modules/vl-ui-core/dist/vl-core.js';
+import 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js';
 
 /**
  * VlHeader
@@ -12,7 +7,7 @@ awaitScript('vl-header', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  * @classdesc De Vlaanderen header.
  *
  * @extends HTMLElement
- * @mixin vlElement
+ * @mixes vlElement
  *
  * @property {string} data-vl-identifier - De header identifier die gebruikt wordt om bij AIV de header op te halen.
  * @property {string} data-vl-development - Attribuut geeft aan dat de AIV ontwikkel servers gebruikt moeten worden.
@@ -51,8 +46,8 @@ export class VlHeader extends vlElement(HTMLElement) {
 
   getHeaderTemplate() {
     return `
-            <div id="${VlHeader.id}"></div>
-        `;
+      <div id="${VlHeader.id}"></div>
+    `;
   }
 
   __addHeaderElement() {
@@ -73,3 +68,5 @@ export class VlHeader extends vlElement(HTMLElement) {
     eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlHeader.id + '").innerHTML = $1;'));
   }
 }
+
+define('vl-header', VlHeader);
