@@ -23,10 +23,9 @@ awaitScript('vl-header', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  *
  */
 export class VlHeader extends vlElement(HTMLElement) {
-
   static get EVENTS() {
     return {
-      ready: 'ready'
+      ready: 'ready',
     };
   }
   constructor() {

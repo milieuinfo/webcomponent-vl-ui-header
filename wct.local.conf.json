@@ -4,7 +4,7 @@
     "plugins": {
         "local": {
             "browsers": ["chrome", "firefox"]
-        },    
+        },
         "junit-reporter": {
             "output": {
                 "path": "../../test/",
@@ -13,5 +13,4 @@
         }
     },
     "suites": ["test/unit/*.test.html"]
-  }
-  
+}

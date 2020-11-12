@@ -74,7 +74,7 @@
       });
 
       test('De header stuurt een ready event als de header gerenderd is', (done) => {
-        const mock = fetchMock.mock(url, 200);
+        fetchMock.mock(url, 200);
         const header = fixture('vl-header-fixture');
         header.addEventListener('ready', function(event) {
           done();
@@ -87,7 +87,7 @@
         const header = fixture('vl-header-fixture');
         sandbox.spy(console, 'error');
         header.addEventListener('ready', function(event) {
-           assert.isTrue(false);
+          assert.isTrue(false);
         });
         return fetchMock.flush().then(() => {
           assert(console.error.called);
