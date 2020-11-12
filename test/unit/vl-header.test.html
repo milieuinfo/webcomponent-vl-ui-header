@@ -72,6 +72,27 @@
           assert.isTrue(mock.called(devUrl));
         });
       });
+
+      test('De header stuurt een ready event als de header gerenderd is', (done) => {
+        const mock = fetchMock.mock(url, 200);
+        const header = fixture('vl-header-fixture');
+        header.addEventListener('ready', function(event) {
+          done();
+        });
+        fetchMock.flush();
+      });
+
+      test('De header stuurt geen ready event als er een fout optreedt bij het renderen van de code', () => {
+        fetchMock.mock(url, 404);
+        const header = fixture('vl-header-fixture');
+        sandbox.spy(console, 'error');
+        header.addEventListener('ready', function(event) {
+           assert.isTrue(false);
+        });
+        return fetchMock.flush().then(() => {
+          assert(console.error.called);
+        });
+      });
     });
   </script>
 </body>
