@@ -86,13 +86,15 @@ export class VlHeader extends vlElement(HTMLElement) {
   }
 
   __headerObserverCallback(mutations, observer) {
-    mutations.forEach((mutation) => {
-      if (mutation.type === 'childList') {
-        if ( this.__headerElementIsToegevoegd(mutation.addedNodes)) {
-          this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
-          observer.disconnect();
-        }
-      }
+    if (this.__headerIsToegevoegdIneenVanDeMutaties(mutations)) {
+      this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
+      observer.disconnect();
+    }
+  }
+
+  __headerIsToegevoegdIneenVanDeMutaties(mutations) {
+    return mutations.some((mutation) => {
+      return mutation.type === 'childList' && this.__headerElementIsToegevoegd(mutation.addedNodes);
     });
   }
 
