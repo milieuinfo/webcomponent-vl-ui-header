@@ -102,11 +102,9 @@ export class VlHeader extends vlElement(HTMLElement) {
 
   __eenVanDeNodesBevatElement(nodeList, element) {
     if (nodeList) {
-      for (let i = 0; i< nodeList.length; i++) {
-        if (this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(i), element)) {
-          return true;
-        };
-      }
+      return Array.from(nodeList).some((node) => {
+        return this.__nodeIsElementOfHeeftElementAlsChild(node, element);
+      });
     }
     return false;
   }
