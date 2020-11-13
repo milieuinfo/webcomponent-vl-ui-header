@@ -73,24 +73,39 @@
         });
       });
 
-      test('De header stuurt een ready event als de header gerenderd is', (done) => {
+      test('De header stuurt een ready event als de AIV-Webuniversum-header aan de pagina is toegevoegd', (done) => {
+        const height = 100;
         fetchMock.mock(url, 200);
-        const header = fixture('vl-header-fixture');
-        header.addEventListener('ready', function(event) {
+        const headerFixture = fixture('vl-header-fixture');
+        headerFixture.addEventListener('ready', function(event) {
+          assert.isTrue(document.querySelector('#header').offsetHeight === height);
           done();
         });
-        fetchMock.flush();
+        setTimeout(() => {
+          fetchMock.flush().then(() => {
+            const headerElement = document.createElement('header');
+            headerElement.style.height = height + 'px';
+            document.querySelector('#header').appendChild(headerElement);
+          });
+        });
       });
 
-      test('De header stuurt geen ready event als er een fout optreedt bij het renderen van de code', () => {
-        fetchMock.mock(url, 404);
-        const header = fixture('vl-header-fixture');
-        sandbox.spy(console, 'error');
-        header.addEventListener('ready', function(event) {
-          assert.isTrue(false);
+      test('De header stuurt geen ready event als de AIV-Webuniversum-header niet aan de pagina toegevoegd is', (done) => {
+        fetchMock.mock(url, 200);
+        const headerFixture = fixture('vl-header-fixture');
+        let readyEventHappend = false;
+        headerFixture.addEventListener('ready', function(event) {
+          readyEventHappend = true;
         });
-        return fetchMock.flush().then(() => {
-          assert(console.error.called);
+        setTimeout(() => {
+          fetchMock.flush().then(() => {
+            const nonHeaderElement = document.createElement('div');
+            document.querySelector('#header').appendChild(nonHeaderElement);
+            setTimeout(() => {
+              assert.isFalse(readyEventHappend);
+              done();
+            });
+          });
         });
       });
     });
