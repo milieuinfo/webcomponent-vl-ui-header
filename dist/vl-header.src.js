@@ -75,8 +75,43 @@ export class VlHeader extends vlElement(HTMLElement) {
     if (!VlHeader.header) {
       document.body.insertAdjacentHTML('afterbegin', this.getHeaderTemplate());
     }
+    this.__observeHeaderElementIsAdded();
     eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlHeader.id + '").innerHTML = $1;'));
-    this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
+  }
+
+  __observeHeaderElementIsAdded() {
+    const target = document.querySelector('#' + VlHeader.id);
+    const headerObserver = new MutationObserver((mutations, observer) => this.__headerObserverCallback(mutations, observer));
+    const config = {attributes: false, childList: true, characterData: false};
+    headerObserver.observe(target, config);
+  }
+
+  __headerObserverCallback(mutations, observer) {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        if ( this.__headerElementIsToegevoegd(mutation.addedNodes)) {
+          this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
+          observer.disconnect();
+        }
+      }
+    });
+  }
+
+  __headerElementIsToegevoegd(toegevoegdeNodes) {
+    return this.__eenVanDeNodesBevatElement(toegevoegdeNodes, 'HEADER');
+  }
+
+  __eenVanDeNodesBevatElement(nodeList, element) {
+    if (nodeList) {
+      for (let i = 0; i< nodeList.length; i++) {
+        return this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(0), element);
+      }
+    }
+    return false;
+  }
+
+  __nodeIsElementOfHeeftElementAlsChild(node, element) {
+    return node.tagName === element || this.__eenVanDeNodesBevatElement(node.childNodes, element);
   }
 }
 
