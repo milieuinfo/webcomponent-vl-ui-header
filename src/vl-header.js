@@ -82,8 +82,7 @@ export class VlHeader extends vlElement(HTMLElement) {
   __observeHeaderElementIsAdded() {
     const target = document.querySelector('#' + VlHeader.id);
     const headerObserver = new MutationObserver((mutations, observer) => this.__headerObserverCallback(mutations, observer));
-    const config = {attributes: false, childList: true, characterData: false};
-    headerObserver.observe(target, config);
+    headerObserver.observe(target, {childList: true});
   }
 
   __headerObserverCallback(mutations, observer) {
