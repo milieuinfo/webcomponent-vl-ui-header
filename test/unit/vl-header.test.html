@@ -83,9 +83,17 @@
         });
         setTimeout(() => {
           fetchMock.flush().then(() => {
+            const parentDiv = document.createElement('div');
+            const span = document.createElement('span');
+            parentDiv.appendChild(span);
+
+            const otherDiv = document.createElement('div');
             const headerElement = document.createElement('header');
             headerElement.style.height = height + 'px';
-            document.querySelector('#header').appendChild(headerElement);
+            otherDiv.appendChild(headerElement);
+
+            parentDiv.appendChild(otherDiv);
+            document.querySelector('#header').appendChild(parentDiv);
           });
         });
       });
