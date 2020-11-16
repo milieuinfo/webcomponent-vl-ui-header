@@ -74,13 +74,9 @@
       });
 
       test('De header stuurt een ready event als de AIV-Webuniversum-header aan de pagina is toegevoegd', (done) => {
-        const height = 100;
         fetchMock.mock(url, 200);
-        const headerFixture = fixture('vl-header-fixture');
-        headerFixture.addEventListener('ready', function(event) {
-          assert.isTrue(document.querySelector('#header').offsetHeight === height);
-          done();
-        });
+        const header = fixture('vl-header-fixture');
+        header.addEventListener('ready', (event) => done());
         setTimeout(() => {
           fetchMock.flush().then(() => {
             const parentDiv = document.createElement('div');
@@ -89,30 +85,22 @@
 
             const otherDiv = document.createElement('div');
             const headerElement = document.createElement('header');
-            headerElement.style.height = height + 'px';
             otherDiv.appendChild(headerElement);
 
             parentDiv.appendChild(otherDiv);
-            document.querySelector('#header').appendChild(parentDiv);
+            VlHeader.header.appendChild(parentDiv);
           });
         });
       });
 
-      test('De header stuurt geen ready event als de AIV-Webuniversum-header niet aan de pagina toegevoegd is', (done) => {
+      test('de header stuurt geen ready event als de AIV-Webuniversum-header niet aan de pagina toegevoegd is', (done) => {
         fetchMock.mock(url, 200);
-        const headerFixture = fixture('vl-header-fixture');
-        let readyEventHappend = false;
-        headerFixture.addEventListener('ready', function(event) {
-          readyEventHappend = true;
-        });
+        const header = fixture('vl-header-fixture');
+        header.addEventListener('ready', (event) => assert.fail('ready event mag niet verstuurd worden wanneer node element geen header is!'));
         setTimeout(() => {
           fetchMock.flush().then(() => {
-            const nonHeaderElement = document.createElement('div');
-            document.querySelector('#header').appendChild(nonHeaderElement);
-            setTimeout(() => {
-              assert.isFalse(readyEventHappend);
-              done();
-            });
+            VlHeader.header.appendChild(document.createElement('div'));
+            setTimeout(() => done());
           });
         });
       });
