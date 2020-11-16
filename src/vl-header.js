@@ -41,6 +41,12 @@ export class VlHeader extends vlElement(HTMLElement) {
     return document.getElementById(VlHeader.id);
   }
 
+  disconnectedCallback() {
+    if (this._observer) {
+      this._observer.disconnect();
+    }
+  }
+
   get _widgetURL() {
     const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
     return `${prefix}/${this._widgetUUID}/embed`;
@@ -75,45 +81,20 @@ export class VlHeader extends vlElement(HTMLElement) {
     if (!VlHeader.header) {
       document.body.insertAdjacentHTML('afterbegin', this.getHeaderTemplate());
     }
-    this.__observeHeaderElementIsAdded();
+    this._observer = this.__observeHeaderElementIsAdded();
     eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlHeader.id + '").innerHTML = $1;'));
   }
 
   __observeHeaderElementIsAdded() {
-    const target = document.querySelector('#' + VlHeader.id);
-    const headerObserver = new MutationObserver((mutations, observer) => this.__headerObserverCallback(mutations, observer));
-    headerObserver.observe(target, {childList: true});
-  }
-
-  __headerObserverCallback(mutations, observer) {
-    if (this.__headerIsToegevoegdIneenVanDeMutaties(mutations)) {
-      this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
-      observer.disconnect();
-    }
-  }
-
-  __headerIsToegevoegdIneenVanDeMutaties(mutations) {
-    return mutations.some((mutation) => {
-      return mutation.type === 'childList' && this.__headerElementIsToegevoegd(mutation.addedNodes);
+    const isHeader = (node) => node.tagName === 'HEADER' || (node.childNodes && [...node.childNodes].some(isHeader));
+    const observer = new MutationObserver((mutations, observer) => {
+      const nodes = mutations.flatMap((mutation) => [...mutation.addedNodes]);
+      if (nodes.some(isHeader)) {
+        this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
+        observer.disconnect();
+      }
     });
-  }
-
-  __headerElementIsToegevoegd(toegevoegdeNodes) {
-    return this.__eenVanDeNodesBevatElement(toegevoegdeNodes, 'HEADER');
-  }
-
-  __eenVanDeNodesBevatElement(nodeList, element) {
-    return nodeList && this.__nodeListBevatNodeMetElement(nodeList, element);
-  }
-
-  __nodeListBevatNodeMetElement(nodeList, element) {
-    return Array.from(nodeList).some((node) => {
-      return this.__nodeIsElementOfHeeftElementAlsChild(node, element);
-    });
-  }
-
-  __nodeIsElementOfHeeftElementAlsChild(node, element) {
-    return node.tagName === element || this.__eenVanDeNodesBevatElement(node.childNodes, element);
+    observer.observe(VlHeader.header, {childList: true});
   }
 }
 
