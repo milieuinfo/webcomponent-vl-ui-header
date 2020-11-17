@@ -1,7 +1,9 @@
 import {vlElement, define, awaitScript} from '/node_modules/vl-ui-core/dist/vl-core.js';
 
-awaitScript('vl-header', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
-  define('vl-header', VlHeader);
+awaitScript('vl-header-client', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-polyfill/dist/index.js').then(() => {
+  awaitScript('vl-header-polyfill', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/node_modules/@govflanders/vl-widget-client/dist/index.js').finally(() => {
+    define('vl-header', VlHeader);
+  });
 }).catch(() => {
   define('vl-header', VlHeader);
 });
@@ -38,7 +40,7 @@ export class VlHeader extends vlElement(HTMLElement) {
 
   get _widgetURL() {
     const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
-    return `${prefix}/${this._widgetUUID}/embed`;
+    return `${prefix}/${this._widgetUUID}`;
   }
 
   get _widgetUUID() {
@@ -56,22 +58,25 @@ export class VlHeader extends vlElement(HTMLElement) {
   }
 
   __addHeaderElement() {
-    fetch(this._widgetURL)
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
-          }
-        }).then((code) => this.__executeCode(code)).catch((error) => console.error(error));
-  }
-
-  __executeCode(code) {
-    if (!VlHeader.header) {
-      document.body.insertAdjacentHTML('afterbegin', this.getHeaderTemplate());
-    }
-    eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlHeader.id + '").innerHTML = $1;'));
+    vl.widget.client.bootstrap(this._widgetURL)
+        .then((widget) => {
+          widget.setMountElement(this);
+          widget.mount().catch((e) => console.error(e));
+          return widget;
+        }).then((widget) => {
+          widget.getExtension('citizen_profile.session').then((session) => {
+            // session.login({type: 'switch-capacity'});
+            session.configure({
+              active: false,
+              endpoints: {
+                loginUrl: '/login',
+                loginRedirectUrl: '/',
+                logoutUrl: '/afgemeld',
+                switchCapacityUrl: '/auth/openid-connect/switch-capacity',
+              },
+            });
+          });
+        })
+        .catch((e) => console.error(e));
   }
 }
-
-define('vl-header', VlHeader);
