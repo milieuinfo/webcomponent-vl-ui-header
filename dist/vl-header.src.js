@@ -23,6 +23,11 @@ awaitScript('vl-header', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  *
  */
 export class VlHeader extends vlElement(HTMLElement) {
+  static get EVENTS() {
+    return {
+      ready: 'ready',
+    };
+  }
   constructor() {
     super();
     this.__addHeaderElement();
@@ -70,7 +75,45 @@ export class VlHeader extends vlElement(HTMLElement) {
     if (!VlHeader.header) {
       document.body.insertAdjacentHTML('afterbegin', this.getHeaderTemplate());
     }
+    this.__observeHeaderElementIsAdded();
     eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlHeader.id + '").innerHTML = $1;'));
+  }
+
+  __observeHeaderElementIsAdded() {
+    const target = document.querySelector('#' + VlHeader.id);
+    const headerObserver = new MutationObserver((mutations, observer) => this.__headerObserverCallback(mutations, observer));
+    const config = {attributes: false, childList: true, characterData: false};
+    headerObserver.observe(target, config);
+  }
+
+  __headerObserverCallback(mutations, observer) {
+    mutations.forEach((mutation) => {
+      if (mutation.type === 'childList') {
+        if ( this.__headerElementIsToegevoegd(mutation.addedNodes)) {
+          this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
+          observer.disconnect();
+        }
+      }
+    });
+  }
+
+  __headerElementIsToegevoegd(toegevoegdeNodes) {
+    return this.__eenVanDeNodesBevatElement(toegevoegdeNodes, 'HEADER');
+  }
+
+  __eenVanDeNodesBevatElement(nodeList, element) {
+    if (nodeList) {
+      for (let i = 0; i< nodeList.length; i++) {
+        if (this.__nodeIsElementOfHeeftElementAlsChild(nodeList.item(i), element)) {
+          return true;
+        };
+      }
+    }
+    return false;
+  }
+
+  __nodeIsElementOfHeeftElementAlsChild(node, element) {
+    return node.tagName === element || this.__eenVanDeNodesBevatElement(node.childNodes, element);
   }
 }
 

@@ -23,6 +23,11 @@ awaitScript('vl-header', 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v
  *
  */
 export class VlHeader extends vlElement(HTMLElement) {
+  static get EVENTS() {
+    return {
+      ready: 'ready',
+    };
+  }
   constructor() {
     super();
     this.__addHeaderElement();
@@ -34,6 +39,12 @@ export class VlHeader extends vlElement(HTMLElement) {
 
   static get header() {
     return document.getElementById(VlHeader.id);
+  }
+
+  disconnectedCallback() {
+    if (this._observer) {
+      this._observer.disconnect();
+    }
   }
 
   get _widgetURL() {
@@ -70,7 +81,20 @@ export class VlHeader extends vlElement(HTMLElement) {
     if (!VlHeader.header) {
       document.body.insertAdjacentHTML('afterbegin', this.getHeaderTemplate());
     }
+    this._observer = this.__observeHeaderElementIsAdded();
     eval(code.replace(/document\.write\((.*?)\);/, 'document.getElementById("' + VlHeader.id + '").innerHTML = $1;'));
+  }
+
+  __observeHeaderElementIsAdded() {
+    const isHeader = (node) => node.tagName === 'HEADER' || (node.childNodes && [...node.childNodes].some(isHeader));
+    const observer = new MutationObserver((mutations, observer) => {
+      const nodes = mutations.flatMap((mutation) => [...mutation.addedNodes]);
+      if (nodes.some(isHeader)) {
+        this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
+        observer.disconnect();
+      }
+    });
+    observer.observe(VlHeader.header, {childList: true});
   }
 }
 
