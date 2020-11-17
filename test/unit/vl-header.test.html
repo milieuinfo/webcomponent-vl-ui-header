@@ -73,7 +73,7 @@
         });
       });
 
-      test('De header stuurt een ready event als de AIV-Webuniversum-header aan de pagina is toegevoegd', (done) => {
+      test('De header stuurt een ready event als er een node met tagname <header> aan de pagina is toegevoegd', (done) => {
         fetchMock.mock(url, 200);
         const header = fixture('vl-header-fixture');
         header.addEventListener('ready', (event) => done());
@@ -93,7 +93,7 @@
         });
       });
 
-      test('de header stuurt geen ready event als de AIV-Webuniversum-header niet aan de pagina toegevoegd is', (done) => {
+      test('de header stuurt geen ready event als er geen node met tagname <header> aan de pagina toegevoegd is', (done) => {
         fetchMock.mock(url, 200);
         const header = fixture('vl-header-fixture');
         header.addEventListener('ready', (event) => assert.fail('ready event mag niet verstuurd worden wanneer node element geen header is!'));
