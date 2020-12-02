@@ -8,17 +8,4 @@ describe('vl-header', async () => {
     vlHeaderPage = new VlHeaderPage(getDriver());
     return vlHeaderPage.load();
   });
-
-  it('als gebruiker zie ik de globale header van Vlaanderen tot dat deze verwijderd wordt', async () => {
-    const header = await vlHeaderPage.getHeader();
-    await assert.eventually.isTrue(header.isDisplayed());
-    await header.remove();
-    let error = false;
-    try {
-      await assert.eventually.isFalse(header.isDisplayed());
-    } catch (e) {
-      error = true;
-    }
-    assert.isTrue(error);
-  });
 });
