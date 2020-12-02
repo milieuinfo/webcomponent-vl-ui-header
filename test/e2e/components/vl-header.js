@@ -3,9 +3,11 @@ const {By, until} = require('selenium-webdriver');
 
 class VlHeader extends VlElement {
   constructor(driver) {
-    const identifier = '#vl-global-header';
+    const identifier = '#header';
     return (async () => {
       await driver.wait(until.elementLocated(By.css(identifier)));
+      const header = driver.findElement(By.css(identifier));
+      await driver.wait(until.elementIsVisible(header));
       return super(driver, identifier);
     })();
   }
