@@ -97,5 +97,3 @@ export class VlHeader extends vlElement(HTMLElement) {
     observer.observe(VlHeader.header, {childList: true});
   }
 }
-
-define('vl-header', VlHeader);
