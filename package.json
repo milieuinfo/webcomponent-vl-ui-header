@@ -37,10 +37,10 @@
     "demo": "http-server"
   },
   "dependencies": {
-    "vl-ui-core": "^6.2.3"
+    "vl-ui-core": "milieuinfo/webcomponent-vl-ui-core#network-logs"
   },
   "peerDependencies": {
-    "vl-ui-core": "^6.0.0"
+    "vl-ui-core": "milieuinfo/webcomponent-vl-ui-core#network-logs"
   },
   "devDependencies": {
     "@govflanders/vl-ui-util": "^3.11.5",
