@@ -98,5 +98,3 @@ export class VlHeader extends vlElement(HTMLElement) {
   }
 }
 
-define('vl-header', VlHeader);
-
