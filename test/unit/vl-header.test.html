@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <script src="../../../@webcomponents/webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../../web-component-tester/browser.js"></script>
-  <script src="../../node_modules/sinon/pkg/sinon.js"></script>
+  <script src="/node_modules/sinon/pkg/sinon.js"></script>
 
   <script type="module" src="../../src/vl-header.js"></script>
 </head>
@@ -24,7 +24,7 @@
   </test-fixture>
 
   <script type="module">
-    import fetchMock from '../../node_modules/fetch-mock/esm/client.mjs';
+    import fetchMock from '/node_modules/fetch-mock/esm/client.js';
     import {VlHeader} from '../../src/vl-header.js';
 
     suite('vl-header', () => {
@@ -42,15 +42,16 @@
         fetchMock.restore();
       });
 
-      test('haalt de Webuniversum embed code op, voorziet een placholder en voert de code uit', () => {
+      test('haalt de Webuniversum embed code op, voorziet een placholder en voert de code uit', (done) => {
         const message = 'code werd uitgevoerd!';
         fetchMock.mock(url, 'console.log("' + message + '")');
         fixture('vl-header-fixture');
         sandbox.spy(console, 'log');
         should.not.exist(document.body.querySelector('#' + VlHeader.id));
-        return fetchMock.flush(true).then(() => {
+        fetchMock.flush(true).then(() => {
           should.exist(document.body.querySelector('#' + VlHeader.id));
           assert(console.log.calledWith(message));
+          done();
         });
       });
 
@@ -69,6 +70,38 @@
         return fetchMock.flush().then(() => {
           assert.isFalse(mock.called(url));
           assert.isTrue(mock.called(devUrl));
+        });
+      });
+
+      test('De header stuurt een ready event als er een node met tagname <header> aan de pagina is toegevoegd', (done) => {
+        fetchMock.mock(url, 200);
+        const header = fixture('vl-header-fixture');
+        header.addEventListener('ready', (event) => done());
+        setTimeout(() => {
+          fetchMock.flush().then(() => {
+            const parentDiv = document.createElement('div');
+            const span = document.createElement('span');
+            parentDiv.appendChild(span);
+
+            const otherDiv = document.createElement('div');
+            const headerElement = document.createElement('header');
+            otherDiv.appendChild(headerElement);
+
+            parentDiv.appendChild(otherDiv);
+            VlHeader.header.appendChild(parentDiv);
+          });
+        });
+      });
+
+      test('de header stuurt geen ready event als er geen node met tagname <header> aan de pagina toegevoegd is', (done) => {
+        fetchMock.mock(url, 200);
+        const header = fixture('vl-header-fixture');
+        header.addEventListener('ready', (event) => assert.fail('ready event mag niet verstuurd worden wanneer node element geen header is!'));
+        setTimeout(() => {
+          fetchMock.flush().then(() => {
+            VlHeader.header.appendChild(document.createElement('div'));
+            setTimeout(() => done());
+          });
         });
       });
     });

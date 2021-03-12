@@ -25,6 +25,11 @@ awaitScript('vl-header-client', 'https://prod.widgets.burgerprofiel.vlaanderen.b
  *
  */
 export class VlHeader extends vlElement(HTMLElement) {
+  static get EVENTS() {
+    return {
+      ready: 'ready',
+    };
+  }
   constructor() {
     super();
     this.__addHeaderElement();
@@ -36,6 +41,12 @@ export class VlHeader extends vlElement(HTMLElement) {
 
   static get header() {
     return document.getElementById(VlHeader.id);
+  }
+
+  disconnectedCallback() {
+    if (this._observer) {
+      this._observer.disconnect();
+    }
   }
 
   get _widgetURL() {
