@@ -90,4 +90,5 @@ export class VlHeader extends vlElement(HTMLElement) {
         })
         .catch((e) => console.error(e));
   }
+}
 
