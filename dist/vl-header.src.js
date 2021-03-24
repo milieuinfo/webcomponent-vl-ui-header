@@ -76,14 +76,13 @@ export class VlHeader extends vlElement(HTMLElement) {
           return widget;
         }).then((widget) => {
           widget.getExtension('citizen_profile.session').then((session) => {
-            // session.login({type: 'switch-capacity'});
             session.configure({
               active: false,
               endpoints: {
-                loginUrl: '/login',
+                loginUrl: '/aanmelden',
                 loginRedirectUrl: '/',
                 logoutUrl: '/afgemeld',
-                switchCapacityUrl: '/auth/openid-connect/switch-capacity',
+                switchCapacityUrl: '/wissel_organisatie',
               },
             });
           });
