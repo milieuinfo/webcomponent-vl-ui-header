@@ -28,9 +28,9 @@ export class VlHeader extends vlElement(HTMLElement) {
       ready: 'ready',
     };
   }
-  constructor() {
-    super();
-    this.__addHeaderElement();
+
+  static get _observedAttributes() {
+    return ['identifier'];
   }
 
   static get id() {
@@ -48,8 +48,10 @@ export class VlHeader extends vlElement(HTMLElement) {
   }
 
   get _widgetURL() {
-    const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
-    return `${prefix}/${this._widgetUUID}/embed`;
+    if (this._widgetUUID) {
+      const prefix = this._isDevelopment ? 'https://tni.widgets.burgerprofiel.dev-vlaanderen.be/api/v1/widget' : 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget';
+      return `${prefix}/${this._widgetUUID}/embed`;
+    }
   }
 
   get _widgetUUID() {
@@ -61,20 +63,23 @@ export class VlHeader extends vlElement(HTMLElement) {
   }
 
   getHeaderTemplate() {
-    return `
-      <div id="${VlHeader.id}"></div>
-    `;
+    return `<div id="${VlHeader.id}"></div>`;
+  }
+
+  _identifierChangedCallback(oldValue, newValue) {
+    this.__addHeaderElement();
   }
 
   __addHeaderElement() {
-    fetch(this._widgetURL)
-        .then((response) => {
-          if (response.ok) {
-            return response.text();
-          } else {
-            throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
-          }
-        }).then((code) => this.__executeCode(code)).catch((error) => console.error(error));
+    if (this._widgetURL) {
+      fetch(this._widgetURL).then((response) => {
+        if (response.ok) {
+          return response.text();
+        } else {
+          throw Error(`Response geeft aan dat er een fout is: ${response.statusText}`);
+        }
+      }).then((code) => this.__executeCode(code)).catch((error) => console.error(error));
+    }
   }
 
   __executeCode(code) {
