@@ -23,6 +23,12 @@
     </template>
   </test-fixture>
 
+  <test-fixture id="vl-header-without-identifier-fixture">
+    <template>
+      <vl-header></vl-header>
+    </template>
+  </test-fixture>
+
   <script type="module">
     import fetchMock from '/node_modules/fetch-mock/esm/client.js';
     import {VlHeader} from '../../src/vl-header.js';
@@ -73,7 +79,7 @@
         });
       });
 
-      test('De header stuurt een ready event als er een node met tagname <header> aan de pagina is toegevoegd', (done) => {
+      test('de header stuurt een ready event als er een node met tagname <header> aan de pagina is toegevoegd', (done) => {
         fetchMock.mock(url, 200);
         const header = fixture('vl-header-fixture');
         header.addEventListener('ready', (event) => done());
@@ -101,6 +107,24 @@
           fetchMock.flush().then(() => {
             VlHeader.header.appendChild(document.createElement('div'));
             setTimeout(() => done());
+          });
+        });
+      });
+
+      test('een header moet bij constructie nog geen identifier bevatten, deze kan achteraf dynamisch toegevoegd worden', (done) => {
+        const message = 'code werd uitgevoerd!';
+        const undefinedUrl = 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget/undefined/embed';
+        fetchMock.mock(undefinedUrl, 400);
+        const header = fixture('vl-header-without-identifier-fixture');
+        sandbox.spy(console, 'error');
+        fetchMock.flush().then(() => {
+          assert.isFalse(console.error.called);
+          fetchMock.mock(url, 'console.log("' + message + '")');
+          sandbox.spy(console, 'log');
+          header.setAttribute('data-vl-identifier', '59188ff6-662b-45b9-b23a-964ad48c2bfb');
+          fetchMock.flush(true).then(() => {
+            assert(console.log.calledWith(message));
+            done();
           });
         });
       });
