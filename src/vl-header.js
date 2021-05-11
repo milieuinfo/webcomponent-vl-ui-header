@@ -31,9 +31,8 @@ export class VlHeader extends vlElement(HTMLElement) {
     };
   }
 
-  constructor() {
-    super();
-    this.__addHeaderElement();
+  static get _observedAttributes() {
+    return ['identifier'];
   }
 
   static get id() {
@@ -65,6 +64,10 @@ export class VlHeader extends vlElement(HTMLElement) {
 
   getHeaderTemplate() {
     return `<div id="${VlHeader.id}"></div>`;
+  }
+
+  _identifierChangedCallback(oldValue, newValue) {
+    this.__addHeaderElement();
   }
 
   __addHeaderElement() {

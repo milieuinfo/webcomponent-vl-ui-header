@@ -96,21 +96,13 @@
       });
 
       test('een header moet bij constructie nog geen identifier bevatten, deze kan achteraf dynamisch toegevoegd worden', (done) => {
-        const message = 'code werd uitgevoerd!';
         const undefinedUrl = 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget/undefined/embed';
-        fetchMock.mock(undefinedUrl, 400);
+        XHRMock.get(undefinedUrl, {status: 400});
         const header = fixture('vl-header-without-identifier-fixture');
-        sandbox.spy(console, 'error');
-        fetchMock.flush().then(() => {
-          assert.isFalse(console.error.called);
-          fetchMock.mock(url, 'console.log("' + message + '")');
-          sandbox.spy(console, 'log');
-          header.setAttribute('data-vl-identifier', '59188ff6-662b-45b9-b23a-964ad48c2bfb');
-          fetchMock.flush(true).then(() => {
-            assert(console.log.calledWith(message));
-            done();
-          });
+        XHRMock.get(url, () => {
+          done();
         });
+        header.setAttribute('data-vl-identifier', '59188ff6-662b-45b9-b23a-964ad48c2bfb');
       });
     });
   </script>
