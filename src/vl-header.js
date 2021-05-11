@@ -70,7 +70,7 @@ export class VlHeader extends vlElement(HTMLElement) {
     this.__addHeaderElement();
   }
 
-  __addHeaderElement() {
+  async __addHeaderElement() {
     if (!VlHeader.header) {
       document.body.insertAdjacentHTML('afterbegin', this.getHeaderTemplate());
     }
@@ -81,9 +81,9 @@ export class VlHeader extends vlElement(HTMLElement) {
       widget.mount().catch((e) => console.error(e));
       return widget;
     }).then((widget) => {
-      widget.getExtension('citizen_profile.session').then((session) => {
+      widget.getExtension('citizen_profile.session').then(async (session) => {
         session.configure({
-          active: false,
+          active: await this.__isUserAuthenticated,
           endpoints: {
             loginUrl: '/aanmelden',
             loginRedirectUrl: '/',
@@ -107,5 +107,10 @@ export class VlHeader extends vlElement(HTMLElement) {
       }
     });
     observer.observe(VlHeader.header, {childList: true});
+  }
+
+  async __isUserAuthenticated() {
+    const response = await fetch('/LoggedInUser');
+    return response.status === 200;
   }
 }

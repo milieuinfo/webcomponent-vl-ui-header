@@ -70,25 +70,47 @@ export class VlHeader extends vlElement(HTMLElement) {
     this.__addHeaderElement();
   }
 
-  __addHeaderElement() {
-    vl.widget.client.bootstrap(this._widgetURL)
-        .then((widget) => {
-          widget.setMountElement(this);
-          widget.mount().catch((e) => console.error(e));
-          return widget;
-        }).then((widget) => {
-          widget.getExtension('citizen_profile.session').then((session) => {
-            session.configure({
-              active: false,
-              endpoints: {
-                loginUrl: '/aanmelden',
-                loginRedirectUrl: '/',
-                logoutUrl: '/afgemeld',
-                switchCapacityUrl: '/wissel_organisatie',
-              },
-            });
-          });
-        })
-        .catch((e) => console.error(e));
+  async __addHeaderElement() {
+    if (!VlHeader.header) {
+      document.body.insertAdjacentHTML('afterbegin', this.getHeaderTemplate());
+    }
+
+    this._observer = this.__observeHeaderElementIsAdded();
+    vl.widget.client.bootstrap(this._widgetURL).then((widget) => {
+      widget.setMountElement(VlHeader.header);
+      widget.mount().catch((e) => console.error(e));
+      return widget;
+    }).then((widget) => {
+      widget.getExtension('citizen_profile.session').then(async (session) => {
+        session.configure({
+          active: await this.__isUserAuthenticated,
+          endpoints: {
+            loginUrl: '/aanmelden',
+            loginRedirectUrl: '/',
+            logoutUrl: '/afgemeld',
+            switchCapacityUrl: '/wissel_organisatie',
+          },
+        });
+      });
+    }).catch((e) => {
+      console.error(e);
+    });
+  }
+
+  __observeHeaderElementIsAdded() {
+    const isHeader = (node) => node.tagName === 'HEADER' || (node.childNodes && [...node.childNodes].some(isHeader));
+    const observer = new MutationObserver((mutations, observer) => {
+      const nodes = mutations.flatMap((mutation) => [...mutation.addedNodes]);
+      if (nodes.some(isHeader)) {
+        this.dispatchEvent(new CustomEvent(VlHeader.EVENTS.ready));
+        observer.disconnect();
+      }
+    });
+    observer.observe(VlHeader.header, {childList: true});
+  }
+
+  async __isUserAuthenticated() {
+    const response = await fetch('/LoggedInUser');
+    return response.status === 200;
   }
 }
