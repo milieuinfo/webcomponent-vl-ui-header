@@ -99,9 +99,7 @@
         const undefinedUrl = 'https://prod.widgets.burgerprofiel.vlaanderen.be/api/v1/widget/undefined/embed';
         XHRMock.get(undefinedUrl, {status: 400});
         const header = fixture('vl-header-without-identifier-fixture');
-        XHRMock.get(url, () => {
-          done();
-        });
+        XHRMock.get(url, () => done());
         header.setAttribute('data-vl-identifier', '59188ff6-662b-45b9-b23a-964ad48c2bfb');
       });
     });
