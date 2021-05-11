@@ -83,7 +83,7 @@ export class VlHeader extends vlElement(HTMLElement) {
     }).then((widget) => {
       widget.getExtension('citizen_profile.session').then(async (session) => {
         session.configure({
-          active: await this.__isUserAuthenticated,
+          active: await this.__isUserAuthenticated(),
           endpoints: {
             loginUrl: '/aanmelden',
             loginRedirectUrl: '/',
