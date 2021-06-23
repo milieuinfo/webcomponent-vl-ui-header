@@ -5,9 +5,7 @@ class VlHeader extends VlElement {
   constructor(driver) {
     const identifier = '#vl-global-header';
     return (async () => {
-      console.log(1);
       await driver.wait(until.elementLocated(By.css(identifier)));
-      console.log(2);
       await driver.wait(async () => {
         const header = await driver.findElement(By.css(identifier));
         return (await driver.wait(until.elementIsVisible(header)));
