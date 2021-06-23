@@ -7,7 +7,8 @@ class VlHeaderPage extends Page {
   }
 
   async load() {
-    await super.load(Config.baseUrl + '/demo/vl-header.html');
+    await this.driver.get(Config.baseUrl + '/demo/vl-header.html');
+    await this.driver.manage().window().maximize();
   }
 }
 
